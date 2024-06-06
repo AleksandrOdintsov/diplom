@@ -226,6 +226,23 @@ resource "yandex_compute_instance" "worker" {
   <img width="" height="" src="./scr/5.png">
 </p>
 
+Устроновим gj для редактирование файла kubconfig 
+```
+brew install jq
+```
+Запускаем скрипт по установки кластера 
+
+```
+cp k8s
+bash k8s_install.sh 
+```
+скрипт сделает 
+ - переименует папку inventory/sample в kubespray
+ - скопирует туда ранее сгенерированный файл hosts.yaml
+ - настриваит kubespray что бы получить файл конфигурации на локальный хост 
+ - запустит kubespray
+ - отредактирует файл конфигурации и скопирует его в локальную папку ~/.kube/config
+
 
 2. Альтернативный вариант: воспользуйтесь сервисом [Yandex Managed Service for Kubernetes](https://cloud.yandex.ru/services/managed-kubernetes)  
   а. С помощью terraform resource для [kubernetes](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/kubernetes_cluster) создать **региональный** мастер kubernetes с размещением нод в разных 3 подсетях      
@@ -235,6 +252,30 @@ resource "yandex_compute_instance" "worker" {
 
 1. Работоспособный Kubernetes кластер.
 2. В файле `~/.kube/config` находятся данные для доступа к кластеру.
+<p align="center">
+  <img width="" height="" src="./scr/6.png">
+</p>
 3. Команда `kubectl get pods --all-namespaces` отрабатывает без ошибок.
+<p align="center">
+  <img width="" height="" src="./scr/7.png">
+</p>
+
+---
+### Создание тестового приложения
+
+Для перехода к следующему этапу необходимо подготовить тестовое приложение, эмулирующее основное приложение разрабатываемое вашей компанией.
+
+Способ подготовки:
+
+1. Рекомендуемый вариант:  
+   а. Создайте отдельный git репозиторий с простым nginx конфигом, который будет отдавать статические данные.  
+   б. Подготовьте Dockerfile для создания образа приложения.  
+2. Альтернативный вариант:  
+   а. Используйте любой другой код, главное, чтобы был самостоятельно создан Dockerfile.
+
+Ожидаемый результат:
+
+1. Git репозиторий с тестовым приложением и Dockerfile.
+2. Регистри с собранным docker image. В качестве регистри может быть DockerHub или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
 
 ---
