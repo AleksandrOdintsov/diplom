@@ -243,7 +243,9 @@ bash k8s_install.sh
  - запустит kubespray
  - отредактирует файл конфигурации и скопирует его в локальную папку ~/.kube/config
 
-
+<p align="center">
+  <img width="" height="" src="./scr/6.png">
+</p>
 2. Альтернативный вариант: воспользуйтесь сервисом [Yandex Managed Service for Kubernetes](https://cloud.yandex.ru/services/managed-kubernetes)  
   а. С помощью terraform resource для [kubernetes](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/kubernetes_cluster) создать **региональный** мастер kubernetes с размещением нод в разных 3 подсетях      
   б. С помощью terraform resource для [kubernetes node group](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/kubernetes_node_group)
@@ -253,11 +255,11 @@ bash k8s_install.sh
 1. Работоспособный Kubernetes кластер.
 2. В файле `~/.kube/config` находятся данные для доступа к кластеру.
 <p align="center">
-  <img width="" height="" src="./scr/6.png">
+  <img width="" height="" src="./scr/7.png">
 </p>
 3. Команда `kubectl get pods --all-namespaces` отрабатывает без ошибок.
 <p align="center">
-  <img width="" height="" src="./scr/7.png">
+  <img width="" height="" src="./scr/8.png">
 </p>
 
 ---
