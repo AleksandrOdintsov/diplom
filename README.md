@@ -386,7 +386,9 @@ bash install_monitoring&dep-testapp.sh
   <img width="" height="" src="./scr/16.png">
 </p>
 
-(сборка , отправка и деплой)[https://github.com/AleksandrOdintsov/myapp/actions/runs/9514991032/job/26228505961]
+
+[сборка , отправка и деплой][https://github.com/AleksandrOdintsov/myapp/actions/runs/9514991032/job/26228505961]
+
 <p align="center">
   <img width="" height="" src="./scr/17.png">
 </p>
