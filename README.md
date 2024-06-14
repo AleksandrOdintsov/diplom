@@ -127,9 +127,9 @@ resource "yandex_vpc_subnet" "public-d" {
 1. Рекомендуемый вариант: самостоятельная установка Kubernetes кластера.  
    а. При помощи Terraform подготовить как минимум 3 виртуальных машины Compute Cloud для создания Kubernetes-кластера. Тип виртуальной машины следует выбрать самостоятельно с учётом требовании к производительности и стоимости. Если в дальнейшем поймете, что необходимо сменить тип инстанса, используйте Terraform для внесения изменений.  
 
-Создаем 3 ВМ в разныз подсетях 
+Создаем 3 ВМ в разных подсетях 
 
-одину master ноду 
+одну master ноду 
    ```
 
 resource "yandex_compute_instance" "master" {
@@ -219,8 +219,12 @@ resource "yandex_compute_instance" "worker" {
    б. Подготовить [ansible](https://www.ansible.com/) конфигурации, можно воспользоваться, например [Kubespray](https://kubernetes.io/docs/setup/production-environment/tools/kubespray/)  
    в. Задеплоить Kubernetes на подготовленные ранее инстансы, в случае нехватки каких-либо ресурсов вы всегда можете создать их при помощи Terraform.
 
-с помощью шаблона создаем файл [инвенторки](./terraform/hosts.tftpl) 
+с помощью шаблона создаем файл [inventory](./terraform/hosts.tftpl) 
 развертывать клстер будем с помощью  [Kubespray](https://github.com/kubernetes-sigs/kubespray) , склонировов его 
+```
+git clone https://github.com/kubernetes-sigs/kubespray
+
+```
 после этого проверим зависимости ``` ansible-galaxy install -r requirements.yml ``` 
 <p align="center">
   <img width="" height="" src="./scr/5.png">
@@ -233,19 +237,27 @@ brew install jq
 Запускаем скрипт по установки кластера 
 
 ```
-cp k8s
-bash k8s_install.sh 
+bash [k8s_install.sh](./02_k8s/k8s_install.sh)
 ```
-скрипт сделает 
+Cкрипт сделает 
  - переименует папку inventory/sample в kubespray
  - скопирует туда ранее сгенерированный файл hosts.yaml
- - настриваит kubespray что бы получить файл конфигурации на локальный хост 
- - запустит kubespray
- - отредактирует файл конфигурации и скопирует его в локальную папку ~/.kube/config
 
 <p align="center">
   <img width="" height="" src="./scr/6.png">
 </p>
+
+Запустим скрипт для оргинизации доступа к кластеру 
+
+```
+bash [k8s_updateconf.sh](./02_k8s/k8s_updateconf.sh)
+
+```
+Cкрипт сделает
+ - настриваит kubespray что бы получить файл конфигурации на локальный хост 
+ - запустит kubespray
+ - отредактирует файл конфигурации и скопирует его в локальную папку ~/.kube/config
+
 2. Альтернативный вариант: воспользуйтесь сервисом [Yandex Managed Service for Kubernetes](https://cloud.yandex.ru/services/managed-kubernetes)  
   а. С помощью terraform resource для [kubernetes](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/kubernetes_cluster) создать **региональный** мастер kubernetes с размещением нод в разных 3 подсетях      
   б. С помощью terraform resource для [kubernetes node group](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/kubernetes_node_group)
@@ -278,6 +290,101 @@ bash k8s_install.sh
 Ожидаемый результат:
 
 1. Git репозиторий с тестовым приложением и Dockerfile.
-2. Регистри с собранным docker image. В качестве регистри может быть DockerHub или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
+
+[Nginx](https://github.com/AleksandrOdintsov/nginx/tree/main/nginx)
+
+2. Регистри с собранным docker image. В качестве регистри может быть DockerHub 
+[DockerHub](https://hub.docker.com/repository/docker/aleksandrodintsov/nginx/general)
+
+или [Yandex Container Registry](https://cloud.yandex.ru/services/container-registry), созданный также с помощью terraform.
+
+<p align="center">
+  <img width="" height="" src="./scr/9.png">
+</p>
+### Подготовка cистемы мониторинга и деплой приложения
+
+Уже должны быть готовы конфигурации для автоматического создания облачной инфраструктуры и поднятия Kubernetes кластера.  
+Теперь необходимо подготовить конфигурационные файлы для настройки нашего Kubernetes кластера.
+
+Цель:
+1. Задеплоить в кластер [prometheus](https://prometheus.io/), [grafana](https://grafana.com/), [alertmanager](https://github.com/prometheus/alertmanager), [экспортер](https://github.com/prometheus/node_exporter) основных метрик Kubernetes.
+2. Задеплоить тестовое приложение, например, [nginx](https://www.nginx.com/) сервер отдающий статическую страницу.
+
+Способ выполнения:
+1. Воспользовать пакетом [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus), который уже включает в себя [Kubernetes оператор](https://operatorhub.io/) для [grafana](https://grafana.com/), [prometheus](https://prometheus.io/), [alertmanager](https://github.com/prometheus/alertmanager) и [node_exporter](https://github.com/prometheus/node_exporter). При желании можете собрать все эти приложения отдельно.
+
+Запускаем скрипт для развертывания систем мониторинга 
+
+```
+bash install_monitoring&dep-testapp.sh
+```
+скрипт сделает 
+- Склонируем репозитарий kube-prometheus
+- Создает  стек мониторинга, используя конфигурацию в manifests каталоге
+- Задеплоит nodeport и NetworkPolicy для доступа к grafana
+- Задиплоит наше тестовое приложение и сервис , в Namespace : diplom , предворительно создав его 
+- покажет запущенные поды мониторинга и моего приложения 
+
+<p align="center">
+  <img width="" height="" src="./scr/10.png">
+</p>
+<p align="center">
+  <img width="" height="" src="./scr/11.png">
+</p>
+
+2. Для организации конфигурации использовать [qbec](https://qbec.io/), основанный на [jsonnet](https://jsonnet.org/). Обратите внимание на имеющиеся функции для интеграции helm конфигов и [helm charts](https://helm.sh/)
+3. Если на первом этапе вы не воспользовались [Terraform Cloud](https://app.terraform.io/), то задеплойте и настройте в кластере [atlantis](https://www.runatlantis.io/) для отслеживания изменений инфраструктуры. Альтернативный вариант 3 задания: вместо Terraform Cloud или atlantis настройте на автоматический запуск и применение конфигурации terraform из вашего git-репозитория в выбранной вами CI-CD системе при любом комите в main ветку. Предоставьте скриншоты работы пайплайна из CI/CD системы.
+
+
+
+Ожидаемый результат:
+1. Git репозиторий с конфигурационными файлами для настройки Kubernetes.
+[Конфигурцаця helm] (/04_monitoring/myapp)
+
+<p align="center">
+  <img width="" height="" src="./scr/14.png">
+</p>
+
+2. Http доступ к web интерфейсу grafana.
+3. Дашборды в grafana отображающие состояние Kubernetes кластера.
+<p align="center">
+  <img width="" height="" src="./scr/12.png">
+</p>
+4. Http доступ к тестовому приложению.
+<p align="center">
+  <img width="" height="" src="./scr/13.png">
+</p>
 
 ---
+### Установка и настройка CI/CD
+
+Осталось настроить ci/cd систему для автоматической сборки docker image и деплоя приложения при изменении кода.
+
+Цель:
+
+1. Автоматическая сборка docker образа при коммите в репозиторий с тестовым приложением.
+2. Автоматический деплой нового docker образа.
+
+Создан [pipline](./05_CICD/Ci-CD.yaml) для сорки обрала при комите в ветку main и в случае если исаользуется тег в формате v*.*.* происходит сборка и деплой в кластер 
+
+Можно использовать [teamcity](https://www.jetbrains.com/ru-ru/teamcity/), [jenkins](https://www.jenkins.io/), [GitLab CI](https://about.gitlab.com/stages-devops-lifecycle/continuous-integration/) или GitHub Actions.
+
+Ожидаемый результат:
+
+1. Интерфейс ci/cd сервиса доступен по http.
+2. При любом коммите в репозиторие с тестовым приложением происходит сборка и отправка в регистр Docker образа.
+<p align="center">
+  <img width="" height="" src="./scr/15.png">
+</p>
+3. При создании тега (например, v1.0.0) происходит сборка и отправка с соответствующим label в регистри, а также деплой соответствующего Docker образа в кластер Kubernetes.
+<p align="center">
+  <img width="" height="" src="./scr/16.png">
+</p>
+
+<p align="center">
+  <img width="" height="" src="./scr/17.png">
+</p>
+
+<p align="center">
+  <img width="" height="" src="./scr/18.png">
+</p>

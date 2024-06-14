@@ -3,7 +3,7 @@
 resource "yandex_storage_bucket" "backend-odintsov" {
   access_key    = yandex_iam_service_account_static_access_key.srvac-static-key.access_key
   secret_key    = yandex_iam_service_account_static_access_key.srvac-static-key.secret_key
-  bucket        = "backend-odintsov"
+  bucket        = "backend-odintsov1"
   acl           = "public-read"
   force_destroy = "true"
   server_side_encryption_configuration {
