@@ -291,7 +291,7 @@ Cкрипт сделает
 
 1. Git репозиторий с тестовым приложением и Dockerfile.
 
-[Nginx](https://github.com/AleksandrOdintsov/nginx/tree/main/nginx)
+[Myapp](https://github.com/AleksandrOdintsov/myapp)
 
 2. Регистри с собранным docker image. В качестве регистри может быть DockerHub 
 [DockerHub](https://hub.docker.com/repository/docker/aleksandrodintsov/nginx/general)
