@@ -375,6 +375,8 @@ bash install_monitoring&dep-testapp.sh
 
 1. Интерфейс ci/cd сервиса доступен по http.
 2. При любом коммите в репозиторие с тестовым приложением происходит сборка и отправка в регистр Docker образа.
+
+[сборка и отправка в регистр](https://github.com/AleksandrOdintsov/myapp/actions/runs/9514993601/job/26228329387)
 <p align="center">
   <img width="" height="" src="./scr/15.png">
 </p>
@@ -382,7 +384,7 @@ bash install_monitoring&dep-testapp.sh
 <p align="center">
   <img width="" height="" src="./scr/16.png">
 </p>
-
+(сборка , отправка и деплой)[https://github.com/AleksandrOdintsov/myapp/actions/runs/9514991032/job/26228505961]
 <p align="center">
   <img width="" height="" src="./scr/17.png">
 </p>
