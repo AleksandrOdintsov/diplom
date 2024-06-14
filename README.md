@@ -47,6 +47,7 @@ resource "yandex_kms_symmetric_key" "key-a" {
 <p align="center">
   <img width="" height="" src="./scr/1.png">
 </p>
+
 2. Подготовьте [backend](https://www.terraform.io/docs/language/settings/backends/index.html) для Terraform:  
    а. Рекомендуемый вариант: S3 bucket в созданном ЯО аккаунте(создание бакета через TF)
    б. Альтернативный вариант:  [Terraform Cloud](https://app.terraform.io/) 
@@ -313,7 +314,7 @@ Cкрипт сделает
 Способ выполнения:
 1. Воспользовать пакетом [kube-prometheus](https://github.com/prometheus-operator/kube-prometheus), который уже включает в себя [Kubernetes оператор](https://operatorhub.io/) для [grafana](https://grafana.com/), [prometheus](https://prometheus.io/), [alertmanager](https://github.com/prometheus/alertmanager) и [node_exporter](https://github.com/prometheus/node_exporter). При желании можете собрать все эти приложения отдельно.
 
-Запускаем скрипт для развертывания систем мониторинга 
+Запускаем [скрипт](./04_monitoring/install_monitoring&dep-testapp.sh) для развертывания систем мониторинга 
 
 ```
 bash install_monitoring&dep-testapp.sh
