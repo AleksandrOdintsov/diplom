@@ -234,10 +234,10 @@ git clone https://github.com/kubernetes-sigs/kubespray
 ```
 brew install jq
 ```
-Запускаем скрипт по установки кластера 
+Запускаем [скрипт](./02_k8s/k8s_install.sh) по установки кластера 
 
 ```
-bash [k8s_install.sh](./02_k8s/k8s_install.sh)
+bash k8s_install.sh
 ```
 Cкрипт сделает 
  - переименует папку inventory/sample в kubespray
@@ -247,10 +247,10 @@ Cкрипт сделает
   <img width="" height="" src="./scr/6.png">
 </p>
 
-Запустим скрипт для оргинизации доступа к кластеру 
+Запустим [скрип](./02_k8s/k8s_updateconf.sh) для оргинизации доступа к кластеру 
 
 ```
-bash [k8s_updateconf.sh](./02_k8s/k8s_updateconf.sh)
+bash k8s_updateconf.sh
 
 ```
 Cкрипт сделает
@@ -339,7 +339,8 @@ bash install_monitoring&dep-testapp.sh
 
 Ожидаемый результат:
 1. Git репозиторий с конфигурационными файлами для настройки Kubernetes.
-[Конфигурцаця helm] (/04_monitoring/myapp)
+
+[Конфигурцаця helm](./04_monitoring/myapp/)
 
 <p align="center">
   <img width="" height="" src="./scr/14.png">
